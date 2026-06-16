@@ -1,8 +1,11 @@
 import { describe, expect, it } from "vitest";
 import {
+  filterWords,
   filterWordsByPattern,
   isPatternValid,
+  matchesLetterRules,
   matchesPattern,
+  normalizeLetterRule,
   normalizePattern,
 } from "./wordFilter.js";
 
@@ -41,5 +44,37 @@ describe("wordFilter", () => {
     const words = ["apple", "angle", "alone"];
     expect(filterWordsByPattern(words, "a..l3")).toEqual([]);
     expect(filterWordsByPattern(words, "")).toEqual([]);
+  });
+
+  it("normalizes letter rule input", () => {
+    expect(normalizeLetterRule(" A, l e ")).toBe("ale");
+  });
+
+  it("matches included and excluded letter rules", () => {
+    expect(matchesLetterRules("angle", "ae", "r")).toBe(true);
+    expect(matchesLetterRules("angle", "az", "r")).toBe(false);
+    expect(matchesLetterRules("crane", "ae", "r")).toBe(false);
+  });
+
+  it("applies pattern and letter rules together", () => {
+    const words = ["apple", "angle", "amble", "adore", "crane"];
+    expect(
+      filterWords(words, {
+        pattern: "a..le",
+        includedLetters: "l",
+        excludedLetters: "p",
+      })
+    ).toEqual(["angle", "amble"]);
+  });
+
+  it("supports letter-only filtering when pattern is empty", () => {
+    const words = ["apple", "angle", "alone", "stare"];
+    expect(
+      filterWords(words, {
+        pattern: "",
+        includedLetters: "a",
+        excludedLetters: "n",
+      })
+    ).toEqual(["apple", "stare"]);
   });
 });

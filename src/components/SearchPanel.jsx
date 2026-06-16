@@ -1,6 +1,15 @@
 import React from "react";
 
-function SearchPanel({ pattern, onPatternChange, onSearch, onClear }) {
+function SearchPanel({
+  pattern,
+  includedLetters,
+  excludedLetters,
+  onPatternChange,
+  onIncludedLettersChange,
+  onExcludedLettersChange,
+  onSearch,
+  onClear,
+}) {
   const handleSubmit = (event) => {
     event.preventDefault();
     onSearch();
@@ -22,6 +31,28 @@ function SearchPanel({ pattern, onPatternChange, onSearch, onClear }) {
           autoComplete="off"
           value={pattern}
           onChange={(event) => onPatternChange(event.target.value)}
+        />
+
+        <label htmlFor="included-letters-input">Included letters</label>
+        <input
+          id="included-letters-input"
+          name="includedLetters"
+          type="text"
+          placeholder="Example: ael"
+          autoComplete="off"
+          value={includedLetters}
+          onChange={(event) => onIncludedLettersChange(event.target.value)}
+        />
+
+        <label htmlFor="excluded-letters-input">Excluded letters</label>
+        <input
+          id="excluded-letters-input"
+          name="excludedLetters"
+          type="text"
+          placeholder="Example: t, r"
+          autoComplete="off"
+          value={excludedLetters}
+          onChange={(event) => onExcludedLettersChange(event.target.value)}
         />
 
         <div className="action-row">

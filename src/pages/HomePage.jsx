@@ -2,47 +2,104 @@ import React, { useMemo, useState } from "react";
 import SearchPanel from "../components/SearchPanel.jsx";
 import ResultsPanel from "../components/ResultsPanel.jsx";
 import { getWordList } from "../services/wordListService.js";
-import { filterWordsByPattern, isPatternValid } from "../utils/wordFilter.js";
+import {
+  filterWords,
+  isPatternValid,
+  normalizeLetterRule,
+  normalizePattern,
+} from "../utils/wordFilter.js";
 
 function HomePage() {
   const [wordList] = useState(() => getWordList());
   const [pattern, setPattern] = useState("");
+  const [includedLetters, setIncludedLetters] = useState("");
+  const [excludedLetters, setExcludedLetters] = useState("");
   const [searchedPattern, setSearchedPattern] = useState("");
+  const [searchedIncludedLetters, setSearchedIncludedLetters] = useState("");
+  const [searchedExcludedLetters, setSearchedExcludedLetters] = useState("");
+  const [hasSearched, setHasSearched] = useState(false);
   const [results, setResults] = useState([]);
 
-  const hasSearched = searchedPattern.length > 0;
-  const normalizedPattern = pattern.trim().toLowerCase();
+  const normalizedPattern = normalizePattern(pattern);
+  const normalizedIncludedLetters = normalizeLetterRule(includedLetters);
+  const normalizedExcludedLetters = normalizeLetterRule(excludedLetters);
 
   const helperText = useMemo(() => {
     if (!hasSearched) {
       return "Enter a pattern and click Search to view results here.";
     }
 
-    if (!isPatternValid(searchedPattern)) {
+    if (searchedPattern && !isPatternValid(searchedPattern)) {
       return "Pattern can only contain letters and . placeholders.";
     }
 
-    if (results.length === 0) {
-      return `No matches found for \"${searchedPattern}\".`;
+    const overlappingLetters = [...searchedIncludedLetters].filter((letter) =>
+      searchedExcludedLetters.includes(letter)
+    );
+    if (overlappingLetters.length > 0) {
+      return "Included and excluded letters cannot overlap.";
     }
 
-    return `Found ${results.length} matches for \"${searchedPattern}\".`;
-  }, [hasSearched, searchedPattern, results.length]);
+    if (results.length === 0) {
+      return "No matches found for the selected rules.";
+    }
+
+    return `Found ${results.length} matches.`;
+  }, [
+    hasSearched,
+    searchedPattern,
+    searchedIncludedLetters,
+    searchedExcludedLetters,
+    results.length,
+  ]);
 
   const handleSearch = () => {
-    if (!normalizedPattern) {
+    const hasAnyRule =
+      normalizedPattern || normalizedIncludedLetters || normalizedExcludedLetters;
+
+    if (!hasAnyRule) {
+      setHasSearched(false);
       setSearchedPattern("");
+      setSearchedIncludedLetters("");
+      setSearchedExcludedLetters("");
       setResults([]);
       return;
     }
 
+    const overlappingLetters = [...normalizedIncludedLetters].filter((letter) =>
+      normalizedExcludedLetters.includes(letter)
+    );
+
+    if (overlappingLetters.length > 0) {
+      setHasSearched(true);
+      setSearchedPattern(normalizedPattern);
+      setSearchedIncludedLetters(normalizedIncludedLetters);
+      setSearchedExcludedLetters(normalizedExcludedLetters);
+      setResults([]);
+      return;
+    }
+
+    setHasSearched(true);
     setSearchedPattern(normalizedPattern);
-    setResults(filterWordsByPattern(wordList, normalizedPattern));
+    setSearchedIncludedLetters(normalizedIncludedLetters);
+    setSearchedExcludedLetters(normalizedExcludedLetters);
+    setResults(
+      filterWords(wordList, {
+        pattern: normalizedPattern,
+        includedLetters: normalizedIncludedLetters,
+        excludedLetters: normalizedExcludedLetters,
+      })
+    );
   };
 
   const handleClear = () => {
     setPattern("");
+    setIncludedLetters("");
+    setExcludedLetters("");
+    setHasSearched(false);
     setSearchedPattern("");
+    setSearchedIncludedLetters("");
+    setSearchedExcludedLetters("");
     setResults([]);
   };
 
@@ -60,7 +117,11 @@ function HomePage() {
       <main className="app-main">
         <SearchPanel
           pattern={pattern}
+          includedLetters={includedLetters}
+          excludedLetters={excludedLetters}
           onPatternChange={setPattern}
+          onIncludedLettersChange={setIncludedLetters}
+          onExcludedLettersChange={setExcludedLetters}
           onSearch={handleSearch}
           onClear={handleClear}
         />
