@@ -26,34 +26,22 @@ function HomePage() {
   const normalizedIncludedLetters = normalizeLetterRule(includedLetters);
   const normalizedExcludedLetters = normalizeLetterRule(excludedLetters);
 
-  const helperText = useMemo(() => {
-    if (!hasSearched) {
-      return "Enter a pattern and click Search to view results here.";
+  const errorMessage = useMemo(() => {
+    if (!hasSearched) return "";
+    if (searchedPattern && searchedPattern.length !== 5) {
+      return "Pattern must be 5 characters";
     }
-
     if (searchedPattern && !isPatternValid(searchedPattern)) {
-      return "Pattern can only contain letters and . placeholders.";
+      return "Pattern: letters and . only";
     }
-
     const overlappingLetters = [...searchedIncludedLetters].filter((letter) =>
       searchedExcludedLetters.includes(letter)
     );
     if (overlappingLetters.length > 0) {
-      return "Included and excluded letters cannot overlap.";
+      return "Included and excluded overlap";
     }
-
-    if (results.length === 0) {
-      return "No matches found for the selected rules.";
-    }
-
-    return `Found ${results.length} matches.`;
-  }, [
-    hasSearched,
-    searchedPattern,
-    searchedIncludedLetters,
-    searchedExcludedLetters,
-    results.length,
-  ]);
+    return "";
+  }, [hasSearched, searchedPattern, searchedIncludedLetters, searchedExcludedLetters]);
 
   const handleSearch = () => {
     const hasAnyRule =
@@ -117,12 +105,7 @@ function HomePage() {
   return (
     <div className="app-shell">
       <header className="app-header">
-        <p className="eyebrow">Wordle Helper</p>
-        <h1>Find Candidate Words Quickly</h1>
-        <p className="subtitle">
-          Use patterns like <strong>a..le</strong>, <strong>.r...</strong>, or an exact
-          word.
-        </p>
+        <h1>Wordle Helper</h1>
       </header>
 
       <main className="app-main">
@@ -142,7 +125,7 @@ function HomePage() {
 
         <ResultsPanel
           hasSearched={hasSearched}
-          helperText={helperText}
+          errorMessage={errorMessage}
           words={results}
           totalWords={wordList.length}
         />

@@ -19,6 +19,14 @@ describe("wordFilter", () => {
     expect(isPatternValid("abc12")).toBe(false);
   });
 
+  it("enforces 5-letter pattern length", () => {
+    expect(isPatternValid("a..l")).toBe(false);
+    expect(isPatternValid("a..le")).toBe(true);
+    expect(isPatternValid("a..le.")).toBe(false);
+    expect(isPatternValid("crane")).toBe(true);
+    expect(isPatternValid("cr")).toBe(false);
+  });
+
   it("matches exact patterns", () => {
     expect(matchesPattern("crane", "crane")).toBe(true);
     expect(matchesPattern("crate", "crane")).toBe(false);
@@ -44,6 +52,7 @@ describe("wordFilter", () => {
     const words = ["apple", "angle", "alone"];
     expect(filterWordsByPattern(words, "a..l3")).toEqual([]);
     expect(filterWordsByPattern(words, "")).toEqual([]);
+    expect(filterWordsByPattern(words, "abc")).toEqual([]);
   });
 
   it("normalizes letter rule input", () => {
@@ -93,5 +102,16 @@ describe("wordFilter", () => {
         excludedLetters: "a",
       })
     ).toEqual(["angle", "addle"]);
+  });
+
+  it("rejects patterns that are not 5 characters", () => {
+    const words = ["apple", "angle", "alone"];
+    expect(
+      filterWords(words, {
+        pattern: "abc",
+        includedLetters: "",
+        excludedLetters: "",
+      })
+    ).toEqual([]);
   });
 });

@@ -1,21 +1,19 @@
 import React from "react";
 
-function ResultsPanel({ hasSearched, helperText, words, totalWords }) {
+function ResultsPanel({ hasSearched, errorMessage, words, totalWords }) {
   return (
     <section className="panel" aria-labelledby="results-heading">
       <div className="panel-head">
         <h2 id="results-heading">Results</h2>
         <p className="results-count">
-          {hasSearched ? `Matches: ${words.length}` : `Word list: ${totalWords} words`}
+          {hasSearched ? words.length : totalWords}
         </p>
       </div>
 
-      <p className="helper-text">{helperText}</p>
-
-      {(!hasSearched || words.length === 0) && <p className="empty-state">{helperText}</p>}
+      {errorMessage && <p className="error-text">{errorMessage}</p>}
 
       {hasSearched && words.length > 0 && (
-        <ul className="result-list" aria-label="Sample words">
+        <ul className="result-list" aria-label="Search results">
           {words.map((word) => (
             <li key={word}>{word}</li>
           ))}

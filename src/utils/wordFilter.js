@@ -1,4 +1,5 @@
 const VALID_PATTERN_REGEX = /^[a-z.]+$/;
+const PATTERN_LENGTH = 5;
 
 export function normalizePattern(input) {
   return input.trim().toLowerCase();
@@ -9,7 +10,10 @@ export function normalizeLetterRule(input) {
 }
 
 export function isPatternValid(pattern) {
-  return VALID_PATTERN_REGEX.test(pattern);
+  if (!VALID_PATTERN_REGEX.test(pattern)) {
+    return false;
+  }
+  return pattern.length === PATTERN_LENGTH;
 }
 
 export function matchesPattern(word, pattern) {
