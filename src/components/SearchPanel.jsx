@@ -1,9 +1,12 @@
 import React from "react";
 
 function SearchPanel({
+  wordListId,
+  wordListOptions,
   pattern,
   includedLetters,
   excludedLetters,
+  onWordListChange,
   onPatternChange,
   onIncludedLettersChange,
   onExcludedLettersChange,
@@ -22,6 +25,20 @@ function SearchPanel({
       </div>
 
       <form className="search-form" onSubmit={handleSubmit}>
+        <label htmlFor="word-list-select">Word list</label>
+        <select
+          id="word-list-select"
+          name="wordList"
+          value={wordListId}
+          onChange={(event) => onWordListChange(event.target.value)}
+        >
+          {wordListOptions.map((option) => (
+            <option key={option.id} value={option.id}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+
         <label htmlFor="pattern-input">Pattern</label>
         <input
           id="pattern-input"

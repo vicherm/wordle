@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react";
 import SearchPanel from "../components/SearchPanel.jsx";
 import ResultsPanel from "../components/ResultsPanel.jsx";
-import { getWordList } from "../services/wordListService.js";
+import { getWordListById, WORD_LISTS } from "../services/wordListService.js";
 import {
   filterWords,
   isPatternValid,
@@ -10,7 +10,7 @@ import {
 } from "../utils/wordFilter.js";
 
 function HomePage() {
-  const [wordList] = useState(() => getWordList());
+  const [wordListId, setWordListId] = useState("answers");
   const [pattern, setPattern] = useState("");
   const [includedLetters, setIncludedLetters] = useState("");
   const [excludedLetters, setExcludedLetters] = useState("");
@@ -19,6 +19,8 @@ function HomePage() {
   const [searchedExcludedLetters, setSearchedExcludedLetters] = useState("");
   const [hasSearched, setHasSearched] = useState(false);
   const [results, setResults] = useState([]);
+
+  const wordList = useMemo(() => getWordListById(wordListId), [wordListId]);
 
   const normalizedPattern = normalizePattern(pattern);
   const normalizedIncludedLetters = normalizeLetterRule(includedLetters);
@@ -103,6 +105,15 @@ function HomePage() {
     setResults([]);
   };
 
+  const handleWordListChange = (nextWordListId) => {
+    setWordListId(nextWordListId);
+    setHasSearched(false);
+    setSearchedPattern("");
+    setSearchedIncludedLetters("");
+    setSearchedExcludedLetters("");
+    setResults([]);
+  };
+
   return (
     <div className="app-shell">
       <header className="app-header">
@@ -116,9 +127,12 @@ function HomePage() {
 
       <main className="app-main">
         <SearchPanel
+          wordListId={wordListId}
+          wordListOptions={WORD_LISTS}
           pattern={pattern}
           includedLetters={includedLetters}
           excludedLetters={excludedLetters}
+          onWordListChange={handleWordListChange}
           onPatternChange={setPattern}
           onIncludedLettersChange={setIncludedLetters}
           onExcludedLettersChange={setExcludedLetters}

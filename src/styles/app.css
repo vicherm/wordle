@@ -78,7 +78,8 @@ label {
   font-weight: 600;
 }
 
-input {
+input,
+select {
   width: 100%;
   padding: 10px 12px;
   border: 1px solid var(--line);
@@ -86,7 +87,8 @@ input {
   background: #fbfdff;
 }
 
-input:focus-visible {
+input:focus-visible,
+select:focus-visible {
   border-color: var(--accent);
   outline: 2px solid color-mix(in oklab, var(--accent), white 75%);
 }
