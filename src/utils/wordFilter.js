@@ -39,8 +39,9 @@ export function matchesPattern(word, pattern) {
   return true;
 }
 
-export function matchesLetterRules(word, includedLetters, excludedLetters) {
+export function matchesLetterRules(word, includedLetters, excludedLetters, pattern = "") {
   const normalizedWord = word.trim().toLowerCase();
+  const normalizedPattern = normalizePattern(pattern);
   const included = [...new Set(normalizeLetterRule(includedLetters).split(""))];
   const excluded = [...new Set(normalizeLetterRule(excludedLetters).split(""))];
 
@@ -55,8 +56,22 @@ export function matchesLetterRules(word, includedLetters, excludedLetters) {
   }
 
   for (const letter of excluded) {
-    if (normalizedWord.includes(letter)) {
-      return false;
+    const allowedIndexes = new Set();
+
+    for (let index = 0; index < normalizedPattern.length; index += 1) {
+      if (normalizedPattern[index] === letter) {
+        allowedIndexes.add(index);
+      }
+    }
+
+    for (let index = 0; index < normalizedWord.length; index += 1) {
+      if (normalizedWord[index] !== letter) {
+        continue;
+      }
+
+      if (!allowedIndexes.has(index)) {
+        return false;
+      }
     }
   }
 
@@ -85,7 +100,12 @@ export function filterWords(
 
   return words.filter((word) => {
     const patternMatches = normalizedPattern ? matchesPattern(word, normalizedPattern) : true;
-    const letterRulesMatch = matchesLetterRules(word, includedLetters, excludedLetters);
+    const letterRulesMatch = matchesLetterRules(
+      word,
+      includedLetters,
+      excludedLetters,
+      normalizedPattern
+    );
     return patternMatches && letterRulesMatch;
   });
 }

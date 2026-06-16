@@ -56,6 +56,13 @@ describe("wordFilter", () => {
     expect(matchesLetterRules("crane", "ae", "r")).toBe(false);
   });
 
+  it("allows excluded letters only in fixed pattern positions", () => {
+    expect(matchesLetterRules("angle", "", "a", "a..le")).toBe(true);
+    expect(matchesLetterRules("amale", "", "a", "a..le")).toBe(false);
+    expect(matchesLetterRules("paler", "", "p", "p....")).toBe(true);
+    expect(matchesLetterRules("poppy", "", "p", "p....")).toBe(false);
+  });
+
   it("applies pattern and letter rules together", () => {
     const words = ["apple", "angle", "amble", "adore", "crane"];
     expect(
@@ -76,5 +83,15 @@ describe("wordFilter", () => {
         excludedLetters: "n",
       })
     ).toEqual(["apple", "stare"]);
+  });
+
+  it("keeps pattern-fixed excluded letters and removes extra occurrences", () => {
+    const words = ["angle", "amale", "addle"];
+    expect(
+      filterWords(words, {
+        pattern: "a..le",
+        excludedLetters: "a",
+      })
+    ).toEqual(["angle", "addle"]);
   });
 });
