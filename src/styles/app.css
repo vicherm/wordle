@@ -85,7 +85,10 @@ select:focus-visible {
 .word-list-buttons {
   display: flex;
   gap: 4px;
-  margin-bottom: 4px;
+  padding: 2px;
+  background: #f9fafb;
+  border: 1px solid var(--line);
+  border-radius: 4px;
 }
 
 .list-button {
@@ -134,12 +137,13 @@ button:hover {
 }
 
 button.secondary {
-  background: #e2e8f0;
-  color: #1f2937;
+  background: #64748b;
+  color: #ffffff;
+  flex-shrink: 0;
 }
 
 button.secondary:hover {
-  background: #cfd8e4;
+  background: #475569;
 }
 
 .results-count {

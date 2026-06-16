@@ -10,34 +10,11 @@ function SearchPanel({
   onPatternChange,
   onIncludedLettersChange,
   onExcludedLettersChange,
-  onSearch,
   onClear,
 }) {
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    onSearch();
-  };
-
   return (
-    <section className="panel" aria-labelledby="search-heading">
-      <div className="panel-head">
-        <h2 id="search-heading">Search</h2>
-      </div>
-
-      <form className="search-form" onSubmit={handleSubmit}>
-        <div className="word-list-buttons">
-          {wordListOptions.map((option) => (
-            <button
-              key={option.id}
-              type="button"
-              className={`list-button ${wordListId === option.id ? "active" : ""}`}
-              onClick={() => onWordListChange(option.id)}
-            >
-              {option.label}
-            </button>
-          ))}
-        </div>
-
+    <section className="panel">
+      <div className="search-form">
         <label htmlFor="pattern-input">Pattern</label>
         <input
           id="pattern-input"
@@ -72,12 +49,26 @@ function SearchPanel({
         />
 
         <div className="action-row">
-          <button type="submit">Search</button>
           <button type="button" className="secondary" onClick={onClear}>
             Clear
           </button>
+          <div className="word-list-buttons">
+            {wordListOptions.map((option) => {
+              const shortLabel = option.id === "answers" ? "Answers" : "Valid";
+              return (
+                <button
+                  key={option.id}
+                  type="button"
+                  className={`list-button ${wordListId === option.id ? "active" : ""}`}
+                  onClick={() => onWordListChange(option.id)}
+                >
+                  {shortLabel}
+                </button>
+              );
+            })}
+          </div>
         </div>
-      </form>
+      </div>
     </section>
   );
 }

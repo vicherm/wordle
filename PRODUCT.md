@@ -28,15 +28,20 @@ The app is fast, minimal, and requires no backend.
 
 ### User Interface
 
-- **Compact Design**: Minimal spacing and layout with no explanatory text
+- **Compact Design**: Minimal spacing and layout for efficiency
+- **Auto-Search**: Results update instantly as you type
+  - Pattern automatically triggers search when 5 letters are entered
+  - Included/excluded letters filter results immediately
+  - No manual Search button needed
 - **Quick Controls**:
-  - Word list selector (toggle buttons)
   - Pattern input (exactly 5 characters)
   - Excluded letters input
   - Included letters input
-  - Search and Clear buttons
+  - Clear button (left) - reset all fields
+  - Word list selector (right) - toggle between "Answers" and "Valid"
 - **Results Panel**: Displays match count and word list
 - **Error Handling**: Shows validation errors for invalid patterns or overlapping rules
+- **Visual Hierarchy**: Clear visual distinction between Clear action and word list selection
 - **Responsive**: Works on desktop and mobile
 
 ## Data Source
@@ -69,6 +74,24 @@ The app is fast, minimal, and requires no backend.
 - Excluded letters cannot appear except where fixed by pattern
 - Rules can combine with pattern constraints
 
+### State Management
+
+- **HomePage.jsx**: Main component using React hooks (useState, useEffect, useMemo)
+- **Auto-search via useEffect**: Watches pattern and letter inputs, triggers filtering when:
+  - Pattern reaches exactly 5 characters, OR
+  - Included/excluded letters are entered
+- **Form state**: Pattern, included letters, excluded letters
+- **Search state**: Previous search values to determine when new filtering is needed
+- **Results**: Filtered word list updated in real-time
+
+### UI Layout
+
+- **Action Row**: Clear button (left) and word list selector (right) in single row
+- **Clear Button**: Slate gray styling for distinct visual hierarchy
+- **Word List Selector**: Bordered container with "Answers" and "Valid" toggle buttons
+- **Input Stack**: Pattern, excluded letters, included letters stacked vertically above actions
+- **Minimal Spacing**: 6px gaps between form elements, 2px panel shadow for depth
+
 ### Testing
 
 - Unit tests for all filter functions (19 tests passing)
@@ -87,6 +110,7 @@ The app is fast, minimal, and requires no backend.
 ✓ Filter by 5-letter pattern (fixed letters + placeholders)  
 ✓ Filter by included letters  
 ✓ Filter by excluded letters (with pattern awareness)  
+✓ Auto-search as user types (no manual button required)  
 ✓ Show match count  
 ✓ Show matching words in list  
 ✓ Allow clearing search  

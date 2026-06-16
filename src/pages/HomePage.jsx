@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import SearchPanel from "../components/SearchPanel.jsx";
 import ResultsPanel from "../components/ResultsPanel.jsx";
 import { getWordListById, WORD_LISTS } from "../services/wordListService.js";
@@ -43,11 +43,13 @@ function HomePage() {
     return "";
   }, [hasSearched, searchedPattern, searchedIncludedLetters, searchedExcludedLetters]);
 
-  const handleSearch = () => {
-    const hasAnyRule =
-      normalizedPattern || normalizedIncludedLetters || normalizedExcludedLetters;
+  useEffect(() => {
+    const shouldSearch =
+      (normalizedPattern && normalizedPattern.length === 5) ||
+      normalizedIncludedLetters ||
+      normalizedExcludedLetters;
 
-    if (!hasAnyRule) {
+    if (!shouldSearch) {
       setHasSearched(false);
       setSearchedPattern("");
       setSearchedIncludedLetters("");
@@ -60,19 +62,16 @@ function HomePage() {
       normalizedExcludedLetters.includes(letter)
     );
 
-    if (overlappingLetters.length > 0) {
-      setHasSearched(true);
-      setSearchedPattern(normalizedPattern);
-      setSearchedIncludedLetters(normalizedIncludedLetters);
-      setSearchedExcludedLetters(normalizedExcludedLetters);
-      setResults([]);
-      return;
-    }
-
     setHasSearched(true);
     setSearchedPattern(normalizedPattern);
     setSearchedIncludedLetters(normalizedIncludedLetters);
     setSearchedExcludedLetters(normalizedExcludedLetters);
+
+    if (overlappingLetters.length > 0) {
+      setResults([]);
+      return;
+    }
+
     setResults(
       filterWords(wordList, {
         pattern: normalizedPattern,
@@ -80,26 +79,16 @@ function HomePage() {
         excludedLetters: normalizedExcludedLetters,
       })
     );
-  };
+  }, [normalizedPattern, normalizedIncludedLetters, normalizedExcludedLetters, wordList]);
 
   const handleClear = () => {
     setPattern("");
     setIncludedLetters("");
     setExcludedLetters("");
-    setHasSearched(false);
-    setSearchedPattern("");
-    setSearchedIncludedLetters("");
-    setSearchedExcludedLetters("");
-    setResults([]);
   };
 
   const handleWordListChange = (nextWordListId) => {
     setWordListId(nextWordListId);
-    setHasSearched(false);
-    setSearchedPattern("");
-    setSearchedIncludedLetters("");
-    setSearchedExcludedLetters("");
-    setResults([]);
   };
 
   return (
@@ -119,7 +108,6 @@ function HomePage() {
           onPatternChange={setPattern}
           onIncludedLettersChange={setIncludedLetters}
           onExcludedLettersChange={setExcludedLetters}
-          onSearch={handleSearch}
           onClear={handleClear}
         />
 
