@@ -1,12 +1,14 @@
 import React, { useMemo, useState } from "react";
 import SearchPanel from "../components/SearchPanel.jsx";
 import ResultsPanel from "../components/ResultsPanel.jsx";
-
-const sampleWords = ["crane", "slate", "adieu", "stare", "alone"];
+import { getWordList } from "../services/wordListService.js";
+import { filterWordsByPattern, isPatternValid } from "../utils/wordFilter.js";
 
 function HomePage() {
+  const [wordList] = useState(() => getWordList());
   const [pattern, setPattern] = useState("");
   const [searchedPattern, setSearchedPattern] = useState("");
+  const [results, setResults] = useState([]);
 
   const hasSearched = searchedPattern.length > 0;
   const normalizedPattern = pattern.trim().toLowerCase();
@@ -16,16 +18,32 @@ function HomePage() {
       return "Enter a pattern and click Search to view results here.";
     }
 
-    return `Search executed for pattern: ${searchedPattern}`;
-  }, [hasSearched, searchedPattern]);
+    if (!isPatternValid(searchedPattern)) {
+      return "Pattern can only contain letters and . placeholders.";
+    }
+
+    if (results.length === 0) {
+      return `No matches found for \"${searchedPattern}\".`;
+    }
+
+    return `Found ${results.length} matches for \"${searchedPattern}\".`;
+  }, [hasSearched, searchedPattern, results.length]);
 
   const handleSearch = () => {
+    if (!normalizedPattern) {
+      setSearchedPattern("");
+      setResults([]);
+      return;
+    }
+
     setSearchedPattern(normalizedPattern);
+    setResults(filterWordsByPattern(wordList, normalizedPattern));
   };
 
   const handleClear = () => {
     setPattern("");
     setSearchedPattern("");
+    setResults([]);
   };
 
   return (
@@ -50,7 +68,8 @@ function HomePage() {
         <ResultsPanel
           hasSearched={hasSearched}
           helperText={helperText}
-          words={sampleWords}
+          words={results}
+          totalWords={wordList.length}
         />
       </main>
     </div>
