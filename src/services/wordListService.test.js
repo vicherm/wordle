@@ -1,7 +1,9 @@
 import { describe, expect, it } from "vitest";
 import {
+  getWordEntriesById,
   getWordList,
   getWordListById,
+  parseWordEntries,
   parseWordList,
   WORD_LISTS,
 } from "./wordListService.js";
@@ -19,6 +21,25 @@ describe("wordListService", () => {
     ]);
   });
 
+  it("parses CSV word lists by using the first column", () => {
+    expect(
+      parseWordList(
+        "word,translation_cs\nCrane,jerab\ncrane,duplicitni\nAPPLE,jablko\ninvalid1,neplatne\n"
+      )
+    ).toEqual(["crane", "apple"]);
+  });
+
+  it("parses CSV word entries with translations", () => {
+    expect(
+      parseWordEntries(
+        "word,translation_cs\nCrane,jerab\ncrane,duplicitni\nAPPLE,jablko\n"
+      )
+    ).toEqual([
+      { word: "crane", translation: "jerab" },
+      { word: "apple", translation: "jablko" },
+    ]);
+  });
+
   it("returns default answers list", () => {
     const answers = getWordList();
     expect(answers.length).toBeGreaterThan(100);
@@ -29,6 +50,14 @@ describe("wordListService", () => {
     const valid = getWordListById("valid");
     expect(valid.length).toBeGreaterThan(1000);
     expect(valid).toContain("crane");
+  });
+
+  it("returns word entries with Czech translations", () => {
+    const validEntries = getWordEntriesById("valid");
+    const craneEntry = validEntries.find((entry) => entry.word === "crane");
+
+    expect(validEntries.length).toBeGreaterThan(1000);
+    expect(craneEntry).toEqual({ word: "crane", translation: "jeřáb" });
   });
 
   it("falls back to answers list for unknown list ids", () => {

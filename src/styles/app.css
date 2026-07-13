@@ -121,6 +121,12 @@ select:focus-visible {
   margin-top: 2px;
 }
 
+.optional-filters {
+  display: grid;
+  gap: 6px;
+  margin-top: 2px;
+}
+
 button {
   border: none;
   background: var(--accent);
@@ -146,6 +152,15 @@ button.secondary:hover {
   background: #475569;
 }
 
+button.tertiary {
+  background: #e2e8f0;
+  color: #1f2937;
+}
+
+button.tertiary:hover {
+  background: #cbd5e1;
+}
+
 .results-count {
   margin: 0;
   color: var(--muted);
@@ -161,16 +176,35 @@ button.secondary:hover {
   font-size: 0.85rem;
 }
 
-.result-list {
-  margin: 8px 0 0;
-  padding-left: 16px;
-  columns: 2;
-  gap: 12px;
+.result-table-wrapper {
+  margin-top: 8px;
+  overflow-x: auto;
 }
 
-.result-list li {
-  margin-bottom: 2px;
+.result-table {
+  width: 100%;
+  border-collapse: collapse;
   font-size: 0.9rem;
+}
+
+.result-table th,
+.result-table td {
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+
+.result-table th {
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.result-table tbody tr:last-child td {
+  border-bottom: none;
 }
 
 @media (max-width: 640px) {
@@ -178,7 +212,4 @@ button.secondary:hover {
     padding: 8px 8px 12px;
   }
 
-  .result-list {
-    columns: 1;
-  }
 }

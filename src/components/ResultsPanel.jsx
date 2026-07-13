@@ -13,11 +13,24 @@ function ResultsPanel({ hasSearched, errorMessage, words, totalWords }) {
       {errorMessage && <p className="error-text">{errorMessage}</p>}
 
       {hasSearched && words.length > 0 && (
-        <ul className="result-list" aria-label="Search results">
-          {words.map((word) => (
-            <li key={word}>{word}</li>
-          ))}
-        </ul>
+        <div className="result-table-wrapper">
+          <table className="result-table" aria-label="Search results">
+            <thead>
+              <tr>
+                <th scope="col">Word</th>
+                <th scope="col">Czech</th>
+              </tr>
+            </thead>
+            <tbody>
+              {words.map((entry) => (
+                <tr key={entry.word}>
+                  <td>{entry.word}</td>
+                  <td>{entry.translation || "-"}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </section>
   );

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 function SearchPanel({
   wordListId,
@@ -12,6 +12,12 @@ function SearchPanel({
   onExcludedLettersChange,
   onClear,
 }) {
+  const [showOptionalFilters, setShowOptionalFilters] = useState(false);
+
+  const toggleOptionalFilters = () => {
+    setShowOptionalFilters((previous) => !previous);
+  };
+
   return (
     <section className="panel">
       <div className="search-form">
@@ -37,37 +43,51 @@ function SearchPanel({
           onChange={(event) => onExcludedLettersChange(event.target.value)}
         />
 
-        <label htmlFor="included-letters-input">Included letters</label>
-        <input
-          id="included-letters-input"
-          name="includedLetters"
-          type="text"
-          placeholder="Example: ael"
-          autoComplete="off"
-          value={includedLetters}
-          onChange={(event) => onIncludedLettersChange(event.target.value)}
-        />
-
         <div className="action-row">
           <button type="button" className="secondary" onClick={onClear}>
             Clear
           </button>
-          <div className="word-list-buttons">
-            {wordListOptions.map((option) => {
-              const shortLabel = option.id === "answers" ? "Answers" : "Valid";
-              return (
-                <button
-                  key={option.id}
-                  type="button"
-                  className={`list-button ${wordListId === option.id ? "active" : ""}`}
-                  onClick={() => onWordListChange(option.id)}
-                >
-                  {shortLabel}
-                </button>
-              );
-            })}
-          </div>
+          <button
+            type="button"
+            className="tertiary"
+            onClick={toggleOptionalFilters}
+            aria-expanded={showOptionalFilters}
+            aria-controls="optional-filters"
+          >
+            {showOptionalFilters ? "Hide optional" : "Show optional"}
+          </button>
         </div>
+
+        {showOptionalFilters && (
+          <div id="optional-filters" className="optional-filters">
+            <label htmlFor="included-letters-input">Included letters</label>
+            <input
+              id="included-letters-input"
+              name="includedLetters"
+              type="text"
+              placeholder="Example: ael"
+              autoComplete="off"
+              value={includedLetters}
+              onChange={(event) => onIncludedLettersChange(event.target.value)}
+            />
+
+            <div className="word-list-buttons">
+              {wordListOptions.map((option) => {
+                const shortLabel = option.id === "answers" ? "Answers" : "Valid";
+                return (
+                  <button
+                    key={option.id}
+                    type="button"
+                    className={`list-button ${wordListId === option.id ? "active" : ""}`}
+                    onClick={() => onWordListChange(option.id)}
+                  >
+                    {shortLabel}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );

@@ -1,7 +1,7 @@
 import React, { useMemo, useState, useEffect } from "react";
 import SearchPanel from "../components/SearchPanel.jsx";
 import ResultsPanel from "../components/ResultsPanel.jsx";
-import { getWordListById, WORD_LISTS } from "../services/wordListService.js";
+import { getWordEntriesById, WORD_LISTS } from "../services/wordListService.js";
 import {
   filterWords,
   isPatternValid,
@@ -20,7 +20,8 @@ function HomePage() {
   const [hasSearched, setHasSearched] = useState(false);
   const [results, setResults] = useState([]);
 
-  const wordList = useMemo(() => getWordListById(wordListId), [wordListId]);
+  const wordEntries = useMemo(() => getWordEntriesById(wordListId), [wordListId]);
+  const wordList = useMemo(() => wordEntries.map((entry) => entry.word), [wordEntries]);
 
   const normalizedPattern = normalizePattern(pattern);
   const normalizedIncludedLetters = normalizeLetterRule(includedLetters);
@@ -72,14 +73,24 @@ function HomePage() {
       return;
     }
 
+    const filteredWords = filterWords(wordList, {
+      pattern: normalizedPattern,
+      includedLetters: normalizedIncludedLetters,
+      excludedLetters: normalizedExcludedLetters,
+    });
+    const entryByWord = new Map(wordEntries.map((entry) => [entry.word, entry]));
+
     setResults(
-      filterWords(wordList, {
-        pattern: normalizedPattern,
-        includedLetters: normalizedIncludedLetters,
-        excludedLetters: normalizedExcludedLetters,
+      filteredWords.map((word) => {
+        const entry = entryByWord.get(word);
+
+        return {
+          word,
+          translation: entry?.translation ?? "",
+        };
       })
     );
-  }, [normalizedPattern, normalizedIncludedLetters, normalizedExcludedLetters, wordList]);
+  }, [normalizedPattern, normalizedIncludedLetters, normalizedExcludedLetters, wordEntries, wordList]);
 
   const handleClear = () => {
     setPattern("");
