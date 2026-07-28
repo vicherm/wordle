@@ -176,35 +176,16 @@ button.tertiary:hover {
   font-size: 0.85rem;
 }
 
-.result-table-wrapper {
-  margin-top: 8px;
-  overflow-x: auto;
+.result-list {
+  margin: 8px 0 0;
+  padding-left: 16px;
+  columns: 2;
+  gap: 12px;
 }
 
-.result-table {
-  width: 100%;
-  border-collapse: collapse;
+.result-list li {
+  margin-bottom: 2px;
   font-size: 0.9rem;
-}
-
-.result-table th,
-.result-table td {
-  padding: 6px 8px;
-  border-bottom: 1px solid var(--line);
-  text-align: left;
-  vertical-align: top;
-}
-
-.result-table th {
-  color: var(--muted);
-  font-size: 0.8rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-}
-
-.result-table tbody tr:last-child td {
-  border-bottom: none;
 }
 
 @media (max-width: 640px) {
@@ -212,4 +193,7 @@ button.tertiary:hover {
     padding: 8px 8px 12px;
   }
 
+  .result-list {
+    columns: 1;
+  }
 }
