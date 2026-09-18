@@ -108,8 +108,26 @@ input.pattern-box {
   font-weight: 600;
 }
 
+.filter-row {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr);
+  align-items: center;
+  gap: 6px;
+}
+
+.filter-controls {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 110px;
+  gap: 6px;
+}
+
+.filter-controls .word-list-buttons {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+}
+
 .word-list-buttons {
-  display: flex;
+  display: grid;
   gap: 4px;
   padding: 2px;
   background: #f9fafb;
@@ -118,7 +136,6 @@ input.pattern-box {
 }
 
 .list-button {
-  flex: 1;
   border: 1px solid var(--line);
   background: #f3f4f6;
   color: var(--text);
@@ -127,7 +144,7 @@ input.pattern-box {
   cursor: pointer;
   font-weight: 500;
   font-size: 0.8rem;
-  min-width: 60px;
+  min-width: 0;
 }
 
 .list-button:hover {
@@ -258,5 +275,29 @@ button.tertiary:hover {
 
   .keyboard-key {
     max-width: none;
+  }
+
+  .filter-controls {
+    grid-template-columns: minmax(0, 1fr) 100px;
+    gap: 4px;
+  }
+
+  .filter-controls .word-list-buttons {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+  }
+
+  .filter-row {
+    grid-template-columns: 56px minmax(0, 1fr);
+    gap: 4px;
+  }
+
+  .filter-row input {
+    padding: 6px;
+  }
+
+  .list-button {
+    min-width: 0;
+    padding: 4px;
   }
 }

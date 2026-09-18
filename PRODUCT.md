@@ -24,7 +24,7 @@ The app is fast, minimal, and requires no backend.
 
 - **Selectable Word Lists**: Choose between two dictionaries via button toggle
   - Official Answers: Curated list of valid Wordle answers
-  - Valid Guess List: Larger list of valid 5-letter guesses
+  - All: Larger list of valid 5-letter guesses
 
 ### User Interface
 
@@ -35,12 +35,11 @@ The app is fast, minimal, and requires no backend.
   - No manual Search button needed
 - **Quick Controls**:
   - Five pattern boxes, each holding one fixed letter or dot placeholder
-  - Excluded letters input
-  - Included letters input
+  - Always-visible Excluded and Included fields, with their inputs on the right
   - Custom keyboard opens for the active input and provides uppercase English QWERTY keys, dot (`.`), and backspace
   - Keyboard closes when the user clicks outside the active input or keyboard
   - Clear button (right of the pattern boxes) - reset all fields and restore focus to the first pattern box
-  - Word list selector (right) - toggle between "Answers" and "Valid"
+  - Word list selector to the right of the filter fields, with vertically stacked "Answers" and "All" buttons
 - **Results Panel**: Displays match count and word list
 - **Error Handling**: Shows validation errors for invalid patterns or overlapping rules
 - **Visual Hierarchy**: Clear visual distinction between Clear action and word list selection
@@ -100,8 +99,9 @@ The app is fast, minimal, and requires no backend.
 
 - **Pattern Row**: Five pattern boxes on the left and a Clear button aligned to the right
 - **Clear Button**: Slate gray styling for distinct visual hierarchy; resets the fields and returns focus to the first pattern box
-- **Word List Selector**: Bordered container with "Answers" and "Valid" toggle buttons
-- **Input Stack**: Pattern boxes, excluded letters, and included letters stacked vertically above actions
+- **Filter Rows**: Compact Excluded and Included label/input rows with a narrow selector column on the right; this arrangement is retained on mobile
+- **Word List Selector**: Bordered vertical container with "Answers" above "All"
+- **Input Stack**: Pattern boxes above the filter controls
 - **Minimal Spacing**: 6px gaps between form elements, 2px panel shadow for depth
 
 ### Testing

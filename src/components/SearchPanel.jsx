@@ -19,7 +19,6 @@ function SearchPanel({
   onExcludedLettersChange,
   onClear,
 }) {
-  const [showOptionalFilters, setShowOptionalFilters] = useState(false);
   const [activeInput, setActiveInput] = useState("");
   const [activePatternIndex, setActivePatternIndex] = useState(0);
   const [patternCells, setPatternCells] = useState(() =>
@@ -42,10 +41,6 @@ function SearchPanel({
     setActiveInput("pattern");
     patternInputRefs.current[0]?.focus();
   }, []);
-
-  const toggleOptionalFilters = () => {
-    setShowOptionalFilters((previous) => !previous);
-  };
 
   const inputValues = {
     pattern,
@@ -165,33 +160,23 @@ function SearchPanel({
           </button>
         </div>
 
-        <label htmlFor="excluded-letters-input">Excluded letters</label>
-        <input
-          id="excluded-letters-input"
-          name="excludedLetters"
-          type="text"
-          placeholder="Example: t, r"
-          autoComplete="off"
-          value={excludedLetters}
-          onChange={(event) => onExcludedLettersChange(event.target.value)}
-          onFocus={() => setActiveInput("excludedLetters")}
-        />
+        <div className="filter-controls">
+          <div className="filter-row">
+            <label htmlFor="excluded-letters-input">Excluded</label>
+            <input
+              id="excluded-letters-input"
+              name="excludedLetters"
+              type="text"
+              placeholder="Example: t, r"
+              autoComplete="off"
+              value={excludedLetters}
+              onChange={(event) => onExcludedLettersChange(event.target.value)}
+              onFocus={() => setActiveInput("excludedLetters")}
+            />
+          </div>
 
-        <div className="action-row">
-          <button
-            type="button"
-            className="tertiary"
-            onClick={toggleOptionalFilters}
-            aria-expanded={showOptionalFilters}
-            aria-controls="optional-filters"
-          >
-            {showOptionalFilters ? "Hide optional" : "Show optional"}
-          </button>
-        </div>
-
-        {showOptionalFilters && (
-          <div id="optional-filters" className="optional-filters">
-            <label htmlFor="included-letters-input">Included letters</label>
+          <div className="filter-row">
+            <label htmlFor="included-letters-input">Included</label>
             <input
               id="included-letters-input"
               name="includedLetters"
@@ -202,24 +187,24 @@ function SearchPanel({
               onChange={(event) => onIncludedLettersChange(event.target.value)}
               onFocus={() => setActiveInput("includedLetters")}
             />
-
-            <div className="word-list-buttons">
-              {wordListOptions.map((option) => {
-                const shortLabel = option.id === "answers" ? "Answers" : "Valid";
-                return (
-                  <button
-                    key={option.id}
-                    type="button"
-                    className={`list-button ${wordListId === option.id ? "active" : ""}`}
-                    onClick={() => onWordListChange(option.id)}
-                  >
-                    {shortLabel}
-                  </button>
-                );
-              })}
-            </div>
           </div>
-        )}
+
+          <div className="word-list-buttons">
+            {wordListOptions.map((option) => {
+              const shortLabel = option.id === "answers" ? "Answers" : "All";
+              return (
+                <button
+                  key={option.id}
+                  type="button"
+                  className={`list-button ${wordListId === option.id ? "active" : ""}`}
+                  onClick={() => onWordListChange(option.id)}
+                >
+                  {shortLabel}
+                </button>
+              );
+            })}
+          </div>
+        </div>
 
         {activeInput && (
           <div className="virtual-keyboard" aria-label="Letter keyboard">
