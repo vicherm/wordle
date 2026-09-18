@@ -127,6 +127,39 @@ select:focus-visible {
   margin-top: 2px;
 }
 
+.virtual-keyboard {
+  display: grid;
+  gap: 4px;
+  margin-top: 4px;
+  padding: 6px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #f8fafc;
+}
+
+.keyboard-row {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+}
+
+.keyboard-key {
+  flex: 1;
+  max-width: 42px;
+  min-height: 32px;
+  padding: 4px;
+  border: 1px solid #b7c4d5;
+  border-radius: 4px;
+  background: #ffffff;
+  color: var(--text);
+  font-size: 0.8rem;
+}
+
+.keyboard-key:hover {
+  background: #dff4ef;
+  color: var(--accent-strong);
+}
+
 button {
   border: none;
   background: var(--accent);
@@ -195,5 +228,9 @@ button.tertiary:hover {
 
   .result-list {
     columns: 1;
+  }
+
+  .keyboard-key {
+    max-width: none;
   }
 }
