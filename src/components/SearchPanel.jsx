@@ -60,7 +60,7 @@ function SearchPanel({
     );
 
     setPatternCells(nextCells);
-  onPatternChange(nextCells.every(Boolean) ? nextCells.join("") : "");
+    onPatternChange(nextCells.every(Boolean) ? nextCells.join("") : "");
   };
 
   const focusPatternCell = (index) => {
@@ -81,10 +81,40 @@ function SearchPanel({
   };
 
   const handlePatternCellKeyDown = (event, index) => {
-    if (event.key === "Backspace" && !patternCells[index] && index > 0) {
+    if (/^[a-z.]$/i.test(event.key)) {
       event.preventDefault();
-      updatePatternCell(index - 1, "");
+      updatePatternCell(index, event.key.toUpperCase());
+
+      if (index < patternCells.length - 1) {
+        focusPatternCell(index + 1);
+      }
+      return;
+    }
+
+    if (event.key === "Backspace") {
+      event.preventDefault();
+
+      if (patternCells[index] !== ".") {
+        updatePatternCell(index, ".");
+        return;
+      }
+
+      if (index > 0) {
+        updatePatternCell(index - 1, ".");
+        focusPatternCell(index - 1);
+      }
+      return;
+    }
+
+    if (event.key === "ArrowLeft" && index > 0) {
+      event.preventDefault();
       focusPatternCell(index - 1);
+      return;
+    }
+
+    if (event.key === "ArrowRight" && index < patternCells.length - 1) {
+      event.preventDefault();
+      focusPatternCell(index + 1);
     }
   };
 
@@ -101,13 +131,13 @@ function SearchPanel({
 
     if (activeInput === "pattern") {
       if (key === "BACKSPACE") {
-        if (patternCells[activePatternIndex]) {
-          updatePatternCell(activePatternIndex, "");
+        if (patternCells[activePatternIndex] !== ".") {
+          updatePatternCell(activePatternIndex, ".");
           return;
         }
 
         if (activePatternIndex > 0) {
-          updatePatternCell(activePatternIndex - 1, "");
+          updatePatternCell(activePatternIndex - 1, ".");
           focusPatternCell(activePatternIndex - 1);
         }
         return;

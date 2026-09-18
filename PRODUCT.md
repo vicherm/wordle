@@ -69,6 +69,8 @@ The app is fast, minimal, and requires no backend.
 - Pattern entry uses five fixed-size boxes prefilled with dot placeholders
 - Dot placeholders match any letter at that position
 - Fixed letters must match exactly at their position
+- Physical letter and dot keys replace the focused box and advance to the next box
+- Left and right arrow keys move between pattern boxes
 
 ### Custom Keyboard
 
@@ -76,7 +78,7 @@ The app is fast, minimal, and requires no backend.
 - Uses a three-row English QWERTY layout
 - Provides only uppercase letters, dot (`.`), and a backspace arrow
 - Replaces the selected pattern box and advances to the next box, or appends to a letter-rule input
-- Backspace clears the selected pattern box or removes the final character from a letter-rule input
+- On-screen and physical Backspace restore a dot in the selected pattern box, or remove the final character from a letter-rule input
 - Hides when the user clicks outside the active input or keyboard
 
 ### Letter Rules
@@ -124,6 +126,7 @@ The app is fast, minimal, and requires no backend.
 ✓ Filter by excluded letters (with pattern awareness)  
 ✓ Auto-search as user types (no manual button required)  
 ✓ Enter patterns through five dot-prefilled boxes
+✓ Support physical keyboard entry and arrow-key navigation for pattern boxes
 ✓ Show match count  
 ✓ Show matching words in list  
 ✓ Allow clearing search  
