@@ -34,10 +34,12 @@ The app is fast, minimal, and requires no backend.
   - Included/excluded letters filter results immediately
   - No manual Search button needed
 - **Quick Controls**:
-  - Pattern input (exactly 5 characters)
+  - Five pattern boxes, each holding one fixed letter or dot placeholder
   - Excluded letters input
   - Included letters input
-  - Clear button (left) - reset all fields
+  - Custom keyboard opens for the active input and provides uppercase English QWERTY keys, dot (`.`), and backspace
+  - Keyboard closes when the user clicks outside the active input or keyboard
+  - Clear button (right of the pattern boxes) - reset all fields and restore focus to the first pattern box
   - Word list selector (right) - toggle between "Answers" and "Valid"
 - **Results Panel**: Displays match count and word list
 - **Error Handling**: Shows validation errors for invalid patterns or overlapping rules
@@ -65,8 +67,18 @@ The app is fast, minimal, and requires no backend.
 
 - Valid characters: `a-z` (letters) and `.` (placeholder)
 - Exactly 5 characters required
+- Pattern entry uses five fixed-size boxes prefilled with dot placeholders
 - Dot placeholders match any letter at that position
 - Fixed letters must match exactly at their position
+
+### Custom Keyboard
+
+- Displays when the user focuses a search input and starts open for the first pattern box
+- Uses a three-row English QWERTY layout
+- Provides only uppercase letters, dot (`.`), and a backspace arrow
+- Replaces the selected pattern box and advances to the next box, or appends to a letter-rule input
+- Backspace clears the selected pattern box or removes the final character from a letter-rule input
+- Hides when the user clicks outside the active input or keyboard
 
 ### Letter Rules
 
@@ -86,10 +98,10 @@ The app is fast, minimal, and requires no backend.
 
 ### UI Layout
 
-- **Action Row**: Clear button (left) and word list selector (right) in single row
-- **Clear Button**: Slate gray styling for distinct visual hierarchy
+- **Pattern Row**: Five pattern boxes on the left and a Clear button aligned to the right
+- **Clear Button**: Slate gray styling for distinct visual hierarchy; resets the fields and returns focus to the first pattern box
 - **Word List Selector**: Bordered container with "Answers" and "Valid" toggle buttons
-- **Input Stack**: Pattern, excluded letters, included letters stacked vertically above actions
+- **Input Stack**: Pattern boxes, excluded letters, and included letters stacked vertically above actions
 - **Minimal Spacing**: 6px gaps between form elements, 2px panel shadow for depth
 
 ### Testing
@@ -111,11 +123,13 @@ The app is fast, minimal, and requires no backend.
 ✓ Filter by included letters  
 ✓ Filter by excluded letters (with pattern awareness)  
 ✓ Auto-search as user types (no manual button required)  
+✓ Enter patterns through five dot-prefilled boxes
 ✓ Show match count  
 ✓ Show matching words in list  
 ✓ Allow clearing search  
 ✓ Handle empty results gracefully  
 ✓ Select between word lists  
+✓ Provide an input-targeted custom keyboard with uppercase letters, dot, and backspace
 ✓ Validate pattern length (exactly 5)  
 ✓ Validate pattern format (letters and dots only)  
 ✓ Validate no overlapping included/excluded letters  

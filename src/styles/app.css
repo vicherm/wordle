@@ -82,6 +82,32 @@ select:focus-visible {
   outline: 1px solid var(--accent);
 }
 
+.pattern-boxes {
+  display: grid;
+  grid-template-columns: repeat(5, 42px);
+  gap: 6px;
+}
+
+.pattern-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pattern-controls .secondary {
+  margin-left: auto;
+}
+
+input.pattern-box {
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
 .word-list-buttons {
   display: flex;
   gap: 4px;

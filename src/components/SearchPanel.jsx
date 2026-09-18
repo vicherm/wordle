@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 const KEYBOARD_ROWS = [
   ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
   ["A", "S", "D", "F", "G", "H", "J", "K", "L"],
   [".", "Z", "X", "C", "V", "B", "N", "M", "BACKSPACE"],
 ];
+const EMPTY_PATTERN_CELLS = Array(5).fill(".");
 
 function SearchPanel({
   wordListId,
@@ -20,6 +21,11 @@ function SearchPanel({
 }) {
   const [showOptionalFilters, setShowOptionalFilters] = useState(false);
   const [activeInput, setActiveInput] = useState("");
+  const [activePatternIndex, setActivePatternIndex] = useState(0);
+  const [patternCells, setPatternCells] = useState(() =>
+    Array.from({ length: 5 }, (_, index) => pattern[index] ?? ".")
+  );
+  const patternInputRefs = useRef([]);
 
   useEffect(() => {
     const handlePointerDown = (event) => {
@@ -30,6 +36,11 @@ function SearchPanel({
 
     document.addEventListener("pointerdown", handlePointerDown);
     return () => document.removeEventListener("pointerdown", handlePointerDown);
+  }, []);
+
+  useEffect(() => {
+    setActiveInput("pattern");
+    patternInputRefs.current[0]?.focus();
   }, []);
 
   const toggleOptionalFilters = () => {
@@ -48,8 +59,71 @@ function SearchPanel({
     excludedLetters: onExcludedLettersChange,
   };
 
+  const updatePatternCell = (index, value) => {
+    const nextCells = patternCells.map((cell, cellIndex) =>
+      cellIndex === index ? value : cell
+    );
+
+    setPatternCells(nextCells);
+  onPatternChange(nextCells.every(Boolean) ? nextCells.join("") : "");
+  };
+
+  const focusPatternCell = (index) => {
+    const nextIndex = Math.max(0, Math.min(index, patternCells.length - 1));
+    setActivePatternIndex(nextIndex);
+    patternInputRefs.current[nextIndex]?.focus();
+  };
+
+  const handlePatternCellChange = (index, value) => {
+    const nextValue = value.toUpperCase().slice(-1);
+
+    if (nextValue && !/^[A-Z.]$/.test(nextValue)) return;
+    updatePatternCell(index, nextValue);
+
+    if (nextValue && index < patternCells.length - 1) {
+      focusPatternCell(index + 1);
+    }
+  };
+
+  const handlePatternCellKeyDown = (event, index) => {
+    if (event.key === "Backspace" && !patternCells[index] && index > 0) {
+      event.preventDefault();
+      updatePatternCell(index - 1, "");
+      focusPatternCell(index - 1);
+    }
+  };
+
+  const handleClear = () => {
+    setPatternCells(EMPTY_PATTERN_CELLS);
+    setActivePatternIndex(0);
+    setActiveInput("pattern");
+    onClear();
+    patternInputRefs.current[0]?.focus();
+  };
+
   const handleKeyboardKey = (key) => {
     if (!activeInput) return;
+
+    if (activeInput === "pattern") {
+      if (key === "BACKSPACE") {
+        if (patternCells[activePatternIndex]) {
+          updatePatternCell(activePatternIndex, "");
+          return;
+        }
+
+        if (activePatternIndex > 0) {
+          updatePatternCell(activePatternIndex - 1, "");
+          focusPatternCell(activePatternIndex - 1);
+        }
+        return;
+      }
+
+      updatePatternCell(activePatternIndex, key);
+      if (activePatternIndex < patternCells.length - 1) {
+        focusPatternCell(activePatternIndex + 1);
+      }
+      return;
+    }
 
     if (key === "BACKSPACE") {
       inputChanges[activeInput](inputValues[activeInput].slice(0, -1));
@@ -62,17 +136,34 @@ function SearchPanel({
   return (
     <section className="panel">
       <div className="search-form">
-        <label htmlFor="pattern-input">Pattern</label>
-        <input
-          id="pattern-input"
-          name="pattern"
-          type="text"
-          placeholder="Example: a..le"
-          autoComplete="off"
-          value={pattern}
-          onChange={(event) => onPatternChange(event.target.value)}
-          onFocus={() => setActiveInput("pattern")}
-        />
+        <div className="pattern-controls">
+          <div className="pattern-boxes" role="group" aria-label="Pattern">
+            {patternCells.map((value, index) => (
+              <input
+                key={index}
+                ref={(element) => {
+                  patternInputRefs.current[index] = element;
+                }}
+                className="pattern-box"
+                type="text"
+                inputMode="text"
+                maxLength="1"
+                autoComplete="off"
+                aria-label={`Pattern position ${index + 1}`}
+                value={value}
+                onChange={(event) => handlePatternCellChange(index, event.target.value)}
+                onKeyDown={(event) => handlePatternCellKeyDown(event, index)}
+                onFocus={() => {
+                  setActiveInput("pattern");
+                  setActivePatternIndex(index);
+                }}
+              />
+            ))}
+          </div>
+          <button type="button" className="secondary" onClick={handleClear}>
+            Clear
+          </button>
+        </div>
 
         <label htmlFor="excluded-letters-input">Excluded letters</label>
         <input
@@ -87,9 +178,6 @@ function SearchPanel({
         />
 
         <div className="action-row">
-          <button type="button" className="secondary" onClick={onClear}>
-            Clear
-          </button>
           <button
             type="button"
             className="tertiary"
