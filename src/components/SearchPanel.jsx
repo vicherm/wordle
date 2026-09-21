@@ -171,7 +171,7 @@ function SearchPanel({
                 }}
                 className="pattern-box"
                 type="text"
-                inputMode="text"
+                inputMode="none"
                 maxLength="1"
                 autoComplete="off"
                 aria-label={`Pattern position ${index + 1}`}
@@ -197,6 +197,7 @@ function SearchPanel({
               id="excluded-letters-input"
               name="excludedLetters"
               type="text"
+              inputMode="none"
               placeholder="Example: t, r"
               autoComplete="off"
               value={excludedLetters}
@@ -211,6 +212,7 @@ function SearchPanel({
               id="included-letters-input"
               name="includedLetters"
               type="text"
+              inputMode="none"
               placeholder="Example: ael"
               autoComplete="off"
               value={includedLetters}
